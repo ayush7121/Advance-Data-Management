@@ -8,11 +8,8 @@
 
 ## 1. Project overview
 
-Your group previously designed and implemented a relational/EER model for the company's data (Assessment 2). This assignment translates that model into a Neo4j graph model, migrates the existing relational CSV data into Neo4j, and demonstrates query & analytics use cases using Cypher and the Graph Data Science Library (GDSL).
+Our group previously designed and implemented a relational/EER model for the company's data (Assessment 2). This assignment translates that model into a Neo4j graph model, migrates the existing relational CSV data into Neo4j, and demonstrates query & analytics use cases using Cypher and the Graph Data Science Library (GDSL).
 
-You are free to adjust the relational model when converting to graph — any change must be documented and justified in the final report (see **Justification** section).
-
----
 
 ## 2. Repository / file structure (expected)
 
@@ -307,13 +304,3 @@ O1001,C123,2024-09-14,125.50
 ```
 order_id,product_id,quantity,unit_price
 O1001,P200,2,45.00
-```
-
----
-
-If you want, I can also:
-
-* produce a ready-to-run set of Cypher scripts adapted to your exact CSV column names (just paste your CSV header lines here), or
-* generate the Neo4j data model diagram PNG from a small schema spec.
-
-Good luck — team work only, and do not submit individual work.
