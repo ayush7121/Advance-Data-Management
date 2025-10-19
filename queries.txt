@@ -1,0 +1,26 @@
+-- Task 3: Graph Database Queries
+-- This file contains four Cypher query use cases with varying complexity levels.
+
+-- 1. Query: Retrieve all customers and the products they purchased
+-- Scenario: Display a list of customers along with the products they have ordered.
+MATCH (c:Customer)-[:PLACED]->(o:Order)-[:CONTAINS]->(p:Product)
+RETURN c.name AS Customer, p.name AS Product
+ORDER BY c.name;
+
+ 2. Query: Count total orders per customer
+ Scenario: Identify top customers based on the number of orders placed.
+MATCH (c:Customer)-[:PLACED]->(o:Order)
+RETURN c.name AS Customer, COUNT(o) AS TotalOrders
+ORDER BY TotalOrders DESC;
+
+ 3. Query: Find suppliers providing products in the 'Electronics' category
+ Scenario: Determine which suppliers are linked to a specific product category.
+MATCH (s:Supplier)-[:SUPPLIES]->(p:Product)-[:BELONGS_TO]->(cat:Category {name:'Electronics'})
+RETURN DISTINCT s.name AS Supplier, cat.name AS Category;
+
+ 4. Query: Identify customers who purchased the same product
+ Scenario: Explore shared purchasing patterns among customers for product recommendations.
+MATCH (c1:Customer)-[:PLACED]->(:Order)-[:CONTAINS]->(p:Product)<-[:CONTAINS]-(:Order)<-[:PLACED]-(c2:Customer)
+WHERE c1 <> c2
+RETURN DISTINCT c1.name AS Customer1, c2.name AS Customer2, p.name AS CommonProduct
+ORDER BY CommonProduct;
