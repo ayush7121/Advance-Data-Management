@@ -1,0 +1,11 @@
+FermentationProcess_ID,Temperature,YeastType,Duration
+FP01,28.5,Yeast A,14
+FP02,22.3,Yeast B,10
+FP03,26.7,Yeast C,12
+FP04,24.0,Yeast D,15
+FP05,25.1,Yeast E,13
+FP06,29.2,Yeast F,9
+FP07,27.8,Yeast G,11
+FP08,23.5,Yeast H,8
+FP09,24.9,Yeast I,12
+FP10,26.2,Yeast J,10

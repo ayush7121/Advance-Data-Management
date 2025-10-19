@@ -1,0 +1,11 @@
+AgingMethod_ID,Type,Aging_Duration
+AM01,Oak Barrel,12
+AM02,Stainless Steel,8
+AM03,Concrete Tank,10
+AM04,Amphora,14
+AM05,Glass Jar,6
+AM06,Clay Pot,9
+AM07,Oak Cask,11
+AM08,Stainless Steel Tank,7
+AM09,Terracotta,13
+AM10,Plastic Container,5

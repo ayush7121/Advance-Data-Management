@@ -1,0 +1,11 @@
+SoilComposition_ID,Type,PH_Level
+SC01,Sandy Loam,6.5
+SC02,Clay,5.8
+SC03,Loam,6.0
+SC04,Silty Clay,6.3
+SC05,Gravelly Loam,6.1
+SC06,Peat,5.5
+SC07,Sandstone,6.2
+SC08,Shale,5.9
+SC09,Volcanic Ash,6.8
+SC10,Limestone,7.2

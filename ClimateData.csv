@@ -1,0 +1,11 @@
+ClimateData_ID,Year,Temperature,Humidity,Rainfall,Season
+CD01,2022,25.3,60.0,200,Summer
+CD02,2021,23.7,55.2,180,Autumn
+CD03,2020,24.5,58.0,190,Spring
+CD04,2019,26.1,62.0,210,Winter
+CD05,2018,24.8,59.0,185,Summer
+CD06,2017,22.9,57.5,175,Autumn
+CD07,2016,23.5,60.2,205,Winter
+CD08,2015,25.7,63.0,215,Spring
+CD09,2014,24.1,58.8,195,Summer
+CD10,2013,23.0,56.5,170,Autumn
