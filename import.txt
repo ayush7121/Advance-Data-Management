@@ -1,0 +1,111 @@
+
+// =======================================
+// import.txt  — Cypher scripts for Task 2
+// =======================================
+
+// ----------------------------
+// 00_create_constraints_indexes
+// ----------------------------
+CREATE CONSTRAINT ON (c:Customer) ASSERT c.customer_id IS UNIQUE;
+CREATE CONSTRAINT ON (o:Order) ASSERT o.order_id IS UNIQUE;
+CREATE CONSTRAINT ON (p:Product) ASSERT p.product_id IS UNIQUE;
+CREATE CONSTRAINT ON (e:Employee) ASSERT e.employee_id IS UNIQUE;
+CREATE CONSTRAINT ON (cat:Category) ASSERT cat.category_id IS UNIQUE;
+CREATE CONSTRAINT ON (s:Supplier) ASSERT s.supplier_id IS UNIQUE;
+
+CREATE INDEX ON :Customer(email);
+CREATE INDEX ON :Product(name);
+CREATE INDEX ON :Order(order_date);
+
+// ----------------------------
+// 01_load_nodes
+// ----------------------------
+
+// 1. Load Customers
+LOAD CSV WITH HEADERS FROM 'file:///Customers.csv' AS row
+MERGE (c:Customer {customer_id: row.customer_id})
+SET c.first_name = row.first_name,
+    c.last_name = row.last_name,
+    c.email = row.email,
+    c.phone = row.phone,
+    c.city = row.city,
+    c.state = row.state,
+    c.created_at = CASE WHEN row.created_at <> '' THEN date(row.created_at) ELSE NULL END;
+
+// 2. Load Employees
+LOAD CSV WITH HEADERS FROM 'file:///Employees.csv' AS row
+MERGE (e:Employee {employee_id: row.employee_id})
+SET e.first_name = row.first_name,
+    e.last_name = row.last_name,
+    e.role = row.role,
+    e.email = row.email;
+
+// 3. Load Products
+LOAD CSV WITH HEADERS FROM 'file:///Products.csv' AS row
+MERGE (p:Product {product_id: row.product_id})
+SET p.name = row.name,
+    p.description = row.description,
+    p.price = CASE WHEN row.price <> '' THEN toFloat(row.price) ELSE NULL END,
+    p.in_stock = CASE WHEN row.in_stock <> '' THEN toInteger(row.in_stock) ELSE NULL END,
+    p.category_id = row.category_id,
+    p.supplier_id = row.supplier_id;
+
+// 4. Load Categories
+LOAD CSV WITH HEADERS FROM 'file:///Categories.csv' AS row
+MERGE (cat:Category {category_id: row.category_id})
+SET cat.name = row.name;
+
+// 5. Load Suppliers
+LOAD CSV WITH HEADERS FROM 'file:///Suppliers.csv' AS row
+MERGE (s:Supplier {supplier_id: row.supplier_id})
+SET s.name = row.name, s.contact_email = row.contact_email;
+
+// 6. Load Orders
+LOAD CSV WITH HEADERS FROM 'file:///Orders.csv' AS row
+MERGE (o:Order {order_id: row.order_id})
+SET o.order_date = CASE WHEN row.order_date <> '' THEN date(row.order_date) ELSE NULL END,
+    o.total_amount = CASE WHEN row.total_amount <> '' THEN toFloat(row.total_amount) ELSE NULL END,
+    o.status = row.status,
+    o.handled_by = row.handled_by;
+
+// ----------------------------
+// 02_load_relationships
+// ----------------------------
+
+// Customer -> Order
+LOAD CSV WITH HEADERS FROM 'file:///Orders.csv' AS row
+MATCH (c:Customer {customer_id: row.customer_id}), (o:Order {order_id: row.order_id})
+MERGE (c)-[:PLACED {order_date: CASE WHEN row.order_date <> '' THEN date(row.order_date) ELSE NULL END}]->(o);
+
+// Order -> Product (OrderItems contains quantity/unit_price)
+LOAD CSV WITH HEADERS FROM 'file:///OrderItems.csv' AS row
+MATCH (o:Order {order_id: row.order_id}), (p:Product {product_id: row.product_id})
+MERGE (o)-[r:CONTAINS]->(p)
+SET r.quantity = CASE WHEN row.quantity <> '' THEN toInteger(row.quantity) ELSE NULL END,
+    r.unit_price = CASE WHEN row.unit_price <> '' THEN toFloat(row.unit_price) ELSE NULL END;
+
+// Product -> Category
+LOAD CSV WITH HEADERS FROM 'file:///Products.csv' AS row
+MATCH (p:Product {product_id: row.product_id}), (cat:Category {category_id: row.category_id})
+MERGE (p)-[:BELONGS_TO]->(cat);
+
+// Product -> Supplier
+LOAD CSV WITH HEADERS FROM 'file:///Products.csv' AS row
+MATCH (p:Product {product_id: row.product_id}), (s:Supplier {supplier_id: row.supplier_id})
+MERGE (s)-[:SUPPLIES]->(p);
+
+// Employee -> Order (handled_by)
+LOAD CSV WITH HEADERS FROM 'file:///Orders.csv' AS row
+MATCH (e:Employee {employee_id: row.handled_by}), (o:Order {order_id: row.order_id})
+WHERE row.handled_by IS NOT NULL AND row.handled_by <> ''
+MERGE (e)-[:HANDLED]->(o);
+
+// Optional: Customer -> Location (if you have Addresses.csv)
+LOAD CSV WITH HEADERS FROM 'file:///Addresses.csv' AS row
+MERGE (loc:Location {location_id: row.location_id})
+SET loc.street = row.street, loc.city = row.city, loc.state = row.state, loc.postcode = row.postcode
+WITH row, loc
+MATCH (c:Customer {customer_id: row.customer_id})
+MERGE (c)-[:LIVES_AT]->(loc);
+
+// End of import.txt
